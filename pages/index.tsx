@@ -1,33 +1,45 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
+// import axios, { AxiosRequestConfig } from "axios";
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/router'
 const http = axios.create({
-  baseURL: "https://quiz-flask.azurewebsites.net/",
+  // baseURL: "https://quiz-flask.azurewebsites.net/",
+  baseURL: "http://127.0.0.1:5000/",
+  // baseURL: "http://127.0.0.1:8080/",
   headers: {
-    'Access-Control-Allow-Origin': 'https://quiz-flask.azurewebsites.net/',
+    // 'Access-Control-Allow-Origin': 'https://quiz-flask.azurewebsites.net/',
+    'Access-Control-Allow-Origin': 'http://127.0.0.1:5000/',
+    // 'Access-Control-Allow-Origin': 'http://127.0.0.1:8080/',
     'Content-Type': 'text/plain'
   }
 })
 
 export default function Home() {
-  if (typeof document !== 'undefined') { document.getElementById("ans_T")!.style.display = "none" };
-  if (typeof document !== 'undefined') { document.getElementById("ans_F")!.style.display = "none" };
-  if (typeof document !== 'undefined') { document.getElementById("reload")!.style.display = "none" };
-  const router = useRouter()
   const [fetchedMessage, setFetchedMessage] = useState("");
   const get_quiz = async () => {
-    const response = await http.get("/");
-    const Q_only = response.data.split(',')
-    setFetchedMessage(Q_only);
-
-  };
+    // const res = await http.get("/user/1");
+    const res = await http.get("/quiz");
+    const Q_only = JSON.parse(JSON.stringify(res.data));
+    const text = new Array(4);
+    text[0] = Q_only.quiz
+    text[1] = Q_only.answer1
+    text[2] = Q_only.answer2
+    text[3] = Q_only.correct_answer
+    setFetchedMessage(text)
+    if (typeof document !== 'undefined') { document.getElementById("ans_T")!.style.display = "none" };
+    if (typeof document !== 'undefined') { document.getElementById("ans_F")!.style.display = "none" };
+    if (typeof document !== 'undefined') { document.getElementById("reload")!.style.display = "none" };
+    const coice_1 = document.getElementById("coice_1")!;
+    const coice_2 = document.getElementById("coice_2")!;
+    coice_1.style.display = "inline";
+    coice_2.style.display = "inline";
+    };
   const get_answer = async (e: any) => {
     // console.log(e.target.innerText);
-    const ans_T = document.getElementById("ans_T")!;
     const coice_1 = document.getElementById("coice_1")!;
     const coice_2 = document.getElementById("coice_2")!;
     const reload = document.getElementById("reload")!;
     if (e.target.innerText == fetchedMessage[3]) {
+      const ans_T = document.getElementById("ans_T")!;
       ans_T.style.display = "block";
       coice_1.style.display = "none";
       coice_2.style.display = "none";
@@ -56,7 +68,7 @@ export default function Home() {
       <button id='coice_2' onClick={(e) => get_answer(e)}>
         {fetchedMessage[2]}
       </button>
-      <button id='reload' type="button" onClick={() => router.reload()}>
+      <button id='reload' type="button" onClick={() => get_quiz()}>
         next Quiz
       </button>
     </>
