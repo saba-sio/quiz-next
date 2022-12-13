@@ -1,4 +1,4 @@
-.container {
+/* .container {
   padding: 0 2rem;
 }
 
@@ -126,4 +126,24 @@
   .logo img {
     filter: invert(1);
   }
+} */
+.main {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.title {
+  color: #0070f3;
+  text-decoration: none;
+  margin: 0;
+  line-height: 1.15;
+  font-size: 4rem;
+  background: linear-gradient(#67a7cc, #c0c0c0);
+  text-align: center;
+}
+
+.title span {
+  color: #fff;
 }
