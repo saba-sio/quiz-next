@@ -16,10 +16,10 @@ const http = axios.create({
 })
 export default function Home() {
   const [fetchedMessage, setFetchedMessage] = useState([""]);
-  const get_quiz = async () => {
+  let get_quiz = async () => {
     // const res = await http.get("/user/1");
     const res = await http.get("/quiz");
-    console.log(res)
+    console.log(res);
     const Q_only = JSON.parse(JSON.stringify(res.data));
     // const text = new Array(4);
     const text = new Array(4);
@@ -37,7 +37,7 @@ export default function Home() {
     coice_1.style.display = "inline";
     coice_2.style.display = "inline";
     };
-  const get_answer = async (e: any) => {
+  let get_answer = async (e: any) => {
     // console.log(e.target.innerText);
     const coice_1 = document.getElementById("coice_1")!;
     const coice_2 = document.getElementById("coice_2")!;
@@ -59,31 +59,51 @@ export default function Home() {
       reload.style.display = "block";
     }
   };
-  const handlers = useSwipeable({
-    onSwiped: (event) => {
-      console.log(event);
-      if (event.dir == "Left") {
-        // 左にスワイプしたときに発火するイベント
-        get_answer(fetchedMessage[1])
-        // hogehoge()
-      }
-      if (event.dir == "Right") {
-        // 右にスワイプしたときに発火するイベント
-        get_answer(fetchedMessage[2])
-        // hogehoge()
-      }
-      if (event.dir == "Up"){
-        get_quiz()
-      }
-    },
-    trackMouse: true,
-  });
+  const handlers_a = useSwipeable({
+      onSwiped: (event) => {
+        // document.addEventListener("keydown",p=> {
+          console.log(event);
+          if (document.getElementById("ans_T")!.style.display == "block" ||document.getElementById("ans_F")!.style.display == "block"){
+            if (event.dir=="Left"){
+              // 正解表示後の左スワイプイベント
+            };
+            if (event.dir=="Right"){
+              // 正解表示後の右スワイプイベント
+            };
+            if (event.dir=="Up"){
+              get_quiz()
+            }
+          }else{
+            // if (p.code =="ArrowLeft" || event.dir=="Left"){
+              if (event.dir=="Left"){
+                // 左にスワイプしたときに発火するイベント
+                get_answer(fetchedMessage[1])
+                // hogehoge()
+              };
+              // if (event.dir == "Right" || p.code =="ArrowRight"){
+                if (event.dir == "Right"){
+                // 右にスワイプしたときに発火するイベント
+                get_answer(fetchedMessage[2])
+                // hogehoge()
+              };
+              // if (event.dir == "Up" || p.code =="ArrowDown"){
+                if (event.dir == "Up"){
+                get_quiz()
+                // })
+              };
+              
+            }
+          }
+          ,
+            trackMouse: true,
+         });
+          
   useEffect(() => {
     get_quiz();
   }, []);
   return (
     <>
-      <div {...handlers}>
+      <div {...handlers_a}>
         aaaaaaaaaaaa
       </div>
       <div className={styles.container}>
@@ -95,7 +115,7 @@ export default function Home() {
           <h1 className={styles.title}>
             サバ<span>塩</span>
           </h1>
-          <h1>問題</h1>
+          <h1 >問題</h1>
           <div id="wrap">
             <div className={styles.box}>
               <h1>
@@ -103,15 +123,16 @@ export default function Home() {
                 <p id='ans_T'>正解!!</p>
                 <p id='ans_F'>不正解</p>
               </h1>
-              <button id="coice_1" onClick={(e) => get_answer(e)}>
-                {fetchedMessage[1]}
-              </button>
-              <button id='coice_2' onClick={(e) => get_answer(e)}>
-                {fetchedMessage[2]}
-              </button>
-              <button id='reload' type="button" onClick={() => get_quiz()}>
+              <h2 id="coice_1" onClick={(e) => get_answer(e)}>
+              ←{fetchedMessage[1]}
+              </h2>
+              <h2 id='coice_2' onClick={(e) => get_answer(e)}>
+                {fetchedMessage[2]}→
+              </h2>
+              <h2 id='reload'  onClick={() => get_quiz()}>
                 next Quiz
-              </button>
+                    ↓
+              </h2>
             </div>
           </div>
         </main>
